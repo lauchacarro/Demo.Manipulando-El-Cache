@@ -29,16 +29,24 @@ namespace WebApi.CachePerEntity
             services.AddControllers();
 
 
-            services.Configure<MongoOptions>(
-                Configuration.GetSection(typeof(MongoOptions).Name));
+            services.Configure<MongoProductOptions>(
+                Configuration.GetSection(typeof(MongoProductOptions).Name));
 
-            services.AddSingleton<IMongoOptions>(sp =>
-               sp.GetRequiredService<IOptions<MongoOptions>>().Value);
+            services.AddSingleton<IMongoProductOptions>(sp =>
+               sp.GetRequiredService<IOptions<MongoProductOptions>>().Value);
+
+            services.Configure<MongoUserOptions>(
+                Configuration.GetSection(typeof(MongoUserOptions).Name));
+
+            services.AddSingleton<IMongoUserOptions>(sp =>
+               sp.GetRequiredService<IOptions<MongoUserOptions>>().Value);
 
             services.AddSingleton<IMemoryKeyCache, MemoryCache>();
             services.AddSingleton<ICachedRepository, CachedRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IProductValidator, ProductValidator>();
+            services.AddScoped<IUserValidator, UserValidator>();
 
 
             services.AddSwaggerGen(c =>

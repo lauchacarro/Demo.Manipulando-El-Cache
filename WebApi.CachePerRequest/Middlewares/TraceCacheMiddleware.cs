@@ -27,7 +27,7 @@ namespace WebApi.CachePerRequest.Middlewares
 
             foreach (var cacheKey in keys)
             {
-                if (cacheKey is ScopedCacheKey key && key.TraceIdentifierId == context.TraceIdentifier)
+                if (cacheKey is CacheKey key && key.TraceIdentifierId == context.TraceIdentifier)
                 {
                     _cache.Remove(cacheKey);
                 }

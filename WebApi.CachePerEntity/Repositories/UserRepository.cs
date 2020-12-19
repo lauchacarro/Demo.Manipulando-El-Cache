@@ -1,6 +1,6 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using WebApi.CachePerEntity.Caching;
@@ -10,61 +10,62 @@ using WebApi.CachePerEntity.Repositories.Base;
 
 namespace WebApi.CachePerEntity.Repositories
 {
-    public class ProductRepository : MongoRepository<Product>, IProductRepository
+    public class UserRepository : MongoRepository<User>, IUserRepository
     {
         private readonly ICachedRepository _cachedRepository;
 
-        public ProductRepository(IMongoProductOptions options, ICachedRepository cachedRepository) : base(options)
+        public UserRepository(IMongoUserOptions options, ICachedRepository cachedRepository) : base(options)
         {
             _cachedRepository = cachedRepository ?? throw new ArgumentNullException(nameof(cachedRepository));
         }
 
-        public override Task<IEnumerable<Product>> GetAllAsync()
+        public override Task<IEnumerable<User>> GetAllAsync()
         {
             return _cachedRepository.GetOrSetAsync(
 
-                    new(nameof(Product), nameof(GetAllAsync)),
+                    new(nameof(User), nameof(GetAllAsync)),
 
                     () => base.GetAllAsync()
                 );
         }
-        public override Task<Product> GetAsync(Guid id)
+
+        public override Task<User> GetAsync(Guid id)
         {
             return _cachedRepository.GetOrSetAsync(
 
-                    new(nameof(Product), nameof(GetAsync), id.ToString()),
+                    new(nameof(User), nameof(GetAsync), id.ToString()),
 
                     () => base.GetAsync(id)
                 );
         }
 
-        public override async Task<Product> CreateAsync(Product entity)
+        public override async Task<User> CreateAsync(User entity)
         {
             var product = await base.CreateAsync(entity);
 
-            _cachedRepository.RemoveByEntity(nameof(Product));
+            _cachedRepository.RemoveByEntity(nameof(User));
 
             return product;
         }
 
-        public override async Task UpdateAsync(Product entity)
+        public override async Task UpdateAsync(User entity)
         {
             await base.UpdateAsync(entity);
 
-            _cachedRepository.RemoveByEntity(nameof(Product));
+            _cachedRepository.RemoveByEntity(nameof(User));
         }
 
-        public override async Task RemoveAsync(Product entity)
+        public override async Task RemoveAsync(User entity)
         {
             await base.RemoveAsync(entity);
 
-            _cachedRepository.RemoveByEntity(nameof(Product));
+            _cachedRepository.RemoveByEntity(nameof(User));
         }
         public override async Task RemoveAllAsync()
         {
             await base.RemoveAllAsync();
 
-            _cachedRepository.RemoveByEntity(nameof(Product));
+            _cachedRepository.RemoveByEntity(nameof(User));
         }
     }
 }

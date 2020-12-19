@@ -18,7 +18,7 @@ namespace WebApi.CachePerRequest.Caching
             _httpContextAccessor = correlationContext ?? throw new ArgumentNullException(nameof(correlationContext));
         }
 
-        public T GetOrSet<T>(ScopedCacheKey cacheKey, Func<T> getItemCallback) where T : class
+        public T GetOrSet<T>(CacheKey cacheKey, Func<T> getItemCallback) where T : class
         {
             cacheKey.TraceIdentifierId = _httpContextAccessor.HttpContext.TraceIdentifier;
 
@@ -32,7 +32,7 @@ namespace WebApi.CachePerRequest.Caching
             return item;
         }
 
-        public async Task<T> GetOrSetAsync<T>(ScopedCacheKey cacheKey, Func<Task<T>> getItemCallback) where T : class
+        public async Task<T> GetOrSetAsync<T>(CacheKey cacheKey, Func<Task<T>> getItemCallback) where T : class
         {
             cacheKey.TraceIdentifierId = _httpContextAccessor.HttpContext.TraceIdentifier;
 
@@ -46,7 +46,7 @@ namespace WebApi.CachePerRequest.Caching
             return item;
         }
 
-        private void SetItemToCache<T>(ScopedCacheKey cacheKey, T item)
+        private void SetItemToCache<T>(CacheKey cacheKey, T item)
         {
             _memoryCache.Set(cacheKey, item);
         }
